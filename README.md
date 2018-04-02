@@ -5,6 +5,7 @@
 {
 	sourceDir: 'source',
 	destDir: 'dist',
+	minify: true,
 	bundles: {
 		items: [
 			{

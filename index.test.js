@@ -65,10 +65,31 @@ test('run() builds one bundle', () => {
 	const fs = require('fs-extra');
 	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
 
-	const expectedOptions = {};
+	const expectedOptions = {minify: false};
 
 	expect.assertions(1);
 	return jspmPlugin().run(pluginConfigs.singleBundle, options)
+		.then(response => {
+			expect(builder.bundle).toBeCalledWith('main.js', expectedOptions);
+		});
+});
+
+test('run() minifies one bundle', () => {
+	jest.restoreAllMocks();
+	const jspm = require('jspm');
+	const builder = new jspm.Builder();
+	const bundleSpy = jest.spyOn(builder, 'bundle');
+
+	const fs = require('fs-extra');
+	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
+
+	const expectedOptions = {minify: true};
+
+	const pluginConfig = {...pluginConfigs.singleBundle};
+	pluginConfig.minify = true;
+
+	expect.assertions(1);
+	return jspmPlugin().run(pluginConfig, options)
 		.then(response => {
 			expect(builder.bundle).toBeCalledWith('main.js', expectedOptions);
 		});
@@ -89,8 +110,6 @@ test('run() writes one bundle file', () => {
 	const fs = require('fs-extra');
 	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
 	const outputFileSpy = jest.spyOn(fs, 'outputFile');
-
-	const expectedOptions = {};
 
 	expect.assertions(1);
 	return jspmPlugin().run(pluginConfigs.singleBundle, options)
@@ -132,7 +151,7 @@ test('run() builds two bundles', () => {
 	const builder = new jspm.Builder();
 	const bundleSpy = jest.spyOn(builder, 'bundle');
 	
-	const expectedOptions = {};
+	const expectedOptions = {minify: false};
 
 	expect.assertions(3);
 	return jspmPlugin().run(pluginConfigs.multipleBundles, options)
@@ -162,8 +181,6 @@ test('run() writes two bundle files', () => {
 	const fs = require('fs-extra');
 	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
 	const outputFileSpy = jest.spyOn(fs, 'outputFile');
-
-	const expectedOptions = {};
 
 	expect.assertions(3);
 	return jspmPlugin().run(pluginConfigs.multipleBundles, options)
