@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint index.js"
+    "lint": "eslint index.js lib"
   },
   "author": "",
   "license": "ISC",

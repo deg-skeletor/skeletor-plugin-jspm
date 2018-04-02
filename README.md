@@ -7,12 +7,17 @@
 	destDir: 'dist',
 	minify: true,
 	bundles: {
+		defaultExclusions: ['common']
 		items: [
 			{
-				entry: 'main'
+				entry: 'common'
 			},
 			{
-				entry: 'component'
+				entry: 'page1'
+			},
+			{
+				entry: 'page2',
+				exclusions: []
 			}
 		]
 	}

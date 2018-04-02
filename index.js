@@ -5,7 +5,8 @@ const run = (config, {logger}) => {
 	const options = {
 		sourceDir: config.sourceDir,
 		destDir: config.destDir,
-		minify: config.minify
+		minify: config.minify,
+		defaultExclusions: config.bundles.defaultExclusions
 	};
 
 	return bundler().buildBundles(config.bundles.items, options)
