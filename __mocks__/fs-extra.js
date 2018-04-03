@@ -17,8 +17,13 @@ const outputFile = (filepath, contents) => {
 	return Promise.resolve(true)
 };
 
+const copy = (src, dest) => {
+	return Promise.resolve(true);
+};
+
 fsExtra.readFile = readFile;
 fsExtra.outputFile = outputFile;
+fsExtra.copy = copy;
 fsExtra.__setMockFiles = __setMockFiles;
 
 module.exports = fsExtra;

@@ -1,7 +1,14 @@
 const bundler = require('./lib/bundler');
+const fileCopier = require('./lib/fileCopier');
+
+const copyFiles = (sourceDir, destDir) => {
+	return Promise.all([
+		fileCopier.copySystemJsFile(sourceDir, destDir),
+		fileCopier.copyConfigFile(sourceDir, destDir)
+	]);
+};
 
 const run = (config, {logger}) => {
-
 	const options = {
 		sourceDir: config.sourceDir,
 		destDir: config.destDir,
@@ -10,6 +17,7 @@ const run = (config, {logger}) => {
 	};
 
 	return bundler().buildBundles(config.bundles.items, options)
+		.then(() => copyFiles(config.sourceDir, config.destDir))
 		.then(() => {
 			const message = `${config.bundles.items.length} bundle(s) processed`;
 			logger.info(message);

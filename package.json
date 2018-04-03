@@ -7,8 +7,15 @@
     "test": "jest",
     "lint": "eslint index.js lib"
   },
-  "author": "",
+  "author": "Ryan Heap <heaper@gmail.com>",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deg-skeletor/skeletor-plugin.git"
+  },
+  "peerDependencies": {
+    "skeletor-core": "git+https://github.com/deg-skeletor/skeletor-core.git"
+  },
   "dependencies": {
     "fs-extra": "^5.0.0",
     "jspm": "^0.17.0-beta.47"

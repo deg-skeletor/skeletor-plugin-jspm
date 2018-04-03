@@ -44,6 +44,8 @@ jest.mock('fs-extra');
 test('run() returns success if no bundles specified', () => {
 	
 	const pluginConfig = {
+		sourceDir: 'source',
+		destDir: 'dist',
 		bundles: {
 			items: []
 		}
@@ -332,5 +334,20 @@ test('run() updates jspm.config.js file with two bundle definitions', () => {
 		.then(response => {
 			expect(fs.outputFile.mock.calls.length).toEqual(3);
 			expect(fs.outputFile.mock.calls[2]).toEqual([jspmConfigFilepath, expectedConfigContents]);
+		});
+});
+
+test('run() copies jspm.config.js and system.js files to destination directory', () => {
+	jest.restoreAllMocks();
+	
+	const fs = require('fs-extra');
+	const copySpy = jest.spyOn(fs, 'copy');
+
+	expect.assertions(3);
+	return jspmPlugin().run(pluginConfigs.singleBundle, options)
+		.then(response => {
+			expect(fs.copy.mock.calls.length).toEqual(2);
+			expect(fs.copy.mock.calls[0]).toEqual(['source/jspm_packages/system.js', 'dist/system.js']);
+			expect(fs.copy.mock.calls[1]).toEqual(['source/jspm.config.js', 'dist/jspm.config.js']);
 		});
 });
