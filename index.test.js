@@ -95,6 +95,120 @@ test('run() minifies one bundle', () => {
 		});
 });
 
+test('run() builds bundle with one default exclusion', () => {
+	jest.restoreAllMocks();
+	const jspm = require('jspm');
+	const builder = new jspm.Builder();
+	const bundleSpy = jest.spyOn(builder, 'bundle');
+
+	const fs = require('fs-extra');
+	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
+
+	const expectedOptions = {minify: false};
+
+	const pluginConfig = {...pluginConfigs.singleBundle};
+	pluginConfig.bundles = {...pluginConfigs.singleBundle.bundles};
+	pluginConfig.bundles.defaultExclusions = ['common'];
+
+	const expectedExpression = 'main.js - common.js';
+
+	expect.assertions(1);
+	return jspmPlugin().run(pluginConfig, options)
+		.then(response => {
+			expect(builder.bundle).toBeCalledWith(expectedExpression, expectedOptions);
+		});
+});
+
+test('run() builds bundle with two default exclusions', () => {
+	jest.restoreAllMocks();
+	const jspm = require('jspm');
+	const builder = new jspm.Builder();
+	const bundleSpy = jest.spyOn(builder, 'bundle');
+
+	const fs = require('fs-extra');
+	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
+
+	const expectedOptions = {minify: false};
+
+	const pluginConfig = {...pluginConfigs.singleBundle};
+	pluginConfig.bundles = {...pluginConfigs.singleBundle.bundles};
+	pluginConfig.bundles.defaultExclusions = ['common', 'common2'];
+
+	const expectedExpression = 'main.js - common.js - common2.js';
+
+	expect.assertions(1);
+	return jspmPlugin().run(pluginConfig, options)
+		.then(response => {
+			expect(builder.bundle).toBeCalledWith(expectedExpression, expectedOptions);
+		});
+});
+
+test('run() builds bundle that is the default exclusion', () => {
+	jest.restoreAllMocks();
+	const jspm = require('jspm');
+	const builder = new jspm.Builder();
+	const bundleSpy = jest.spyOn(builder, 'bundle');
+
+	const fs = require('fs-extra');
+	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
+
+	const expectedOptions = {minify: false};
+
+	const pluginConfig = {...pluginConfigs.singleBundle};
+	pluginConfig.bundles = {...pluginConfigs.singleBundle.bundles};
+	pluginConfig.bundles.defaultExclusions = ['main'];
+
+	const expectedExpression = 'main.js';
+
+	expect.assertions(1);
+	return jspmPlugin().run(pluginConfig, options)
+		.then(response => {
+			expect(builder.bundle).toBeCalledWith(expectedExpression, expectedOptions);
+		});
+});
+
+test('run() builds bundle with one exclusion', () => {
+	jest.restoreAllMocks();
+	const jspm = require('jspm');
+	const builder = new jspm.Builder();
+	const bundleSpy = jest.spyOn(builder, 'bundle');
+
+	const fs = require('fs-extra');
+	fs.__setMockFiles({[jspmConfigFilepath]: jspmConfigFileContents});
+
+	const pluginConfig = {
+		sourceDir: 'source',
+		destDir: 'dist',
+		bundles: {
+			defaultExclusions: ['common'],
+			items: [
+				{
+					entry: 'common'
+				},
+				{
+					entry: 'common2'
+				},
+				{
+					entry: 'page1',
+					exclusions: ['common2']
+				},
+				{
+					entry: 'page2'
+				}
+			]
+		}
+	}
+
+	const expectedExpression = 'page1.js - common2.js';
+	const expectedOptions = {minify: false};
+
+	expect.assertions(1);
+	return jspmPlugin().run(pluginConfig, options)
+		.then(response => {
+			expect(builder.bundle.mock.calls[2]).toEqual([expectedExpression, expectedOptions]);
+		});
+});
+
 test('run() writes one bundle file', () => {
 	jest.restoreAllMocks();
 	const expectedBundleContents = 'contents1'; 
@@ -114,7 +228,7 @@ test('run() writes one bundle file', () => {
 	expect.assertions(1);
 	return jspmPlugin().run(pluginConfigs.singleBundle, options)
 		.then(response => {
-			expect(fs.outputFile).toBeCalledWith('dist/main-bundle.js', expectedBundleContents);
+			expect(fs.outputFile.mock.calls[0]).toEqual(['dist/main-bundle.js', expectedBundleContents]);
 		});
 });
 
