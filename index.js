@@ -28,7 +28,7 @@ const run = (config, options) => {
 			bundler.buildBundlesForFile(options.source.filepath, config.bundles.items, bundlerOptions) :
 			bundler.buildBundles(config.bundles.items, bundlerOptions);
 	} else {
-		bundlerPromise = Promise.resolve(true);
+		bundlerPromise = Promise.resolve();
 	}
 
 	return bundlerPromise
