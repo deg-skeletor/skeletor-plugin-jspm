@@ -1,4 +1,5 @@
 # skeletor-plugin-jspm
+[![Build Status](https://travis-ci.org/deg-skeletor/skeletor-plugin-jspm.svg?branch=master)](https://travis-ci.org/deg-skeletor/skeletor-plugin-jspm)
 
 ## Config
 ```js
