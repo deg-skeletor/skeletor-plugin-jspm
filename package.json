@@ -1,6 +1,6 @@
 {
   "name": "@skeletor/plugin-jspm",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A JSPM Skeletor plugin",
   "main": "index.js",
   "scripts": {
@@ -18,18 +18,18 @@
   },
   "dependencies": {
     "fs-extra": "^5.0.0",
-    "jspm": "^0.17.0-beta.47"
+    "jspm": "^0.17.0-beta.49"
   },
   "devDependencies": {
     "eslint": "^4.17.0",
-    "jest": "^22.2.1"
+    "jest": "^24.8.0"
   },
   "publishConfig": {
-        "access": "public"
-    },
-    "keywords": [
-        "skeletor",
-        "skeletor-plugin",
-        "jspm"
-    ]
+    "access": "public"
+  },
+  "keywords": [
+    "skeletor",
+    "skeletor-plugin",
+    "jspm"
+  ]
 }
