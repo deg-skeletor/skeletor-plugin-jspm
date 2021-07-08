@@ -18,23 +18,27 @@ function getBundlerOptions(config, {logger}) {
 	};
 }
 
+function ensureBundleConfigs(config) {
+	return config.bundles && Array.isArray(config.bundles.items) ? config.bundles.items : [];
+}
+
 const run = (config, options) => {
 	const bundlerOptions = getBundlerOptions(config, options);
 
-	let bundlerPromise;
+	const bundleConfigs = ensureBundleConfigs(config);
 
-	if(config.bundles && Array.isArray(config.bundles.items)) {
-		bundlerPromise = options.source && options.source.filepath ?
-			bundler.buildBundlesForFile(options.source.filepath, config.bundles.items, bundlerOptions) :
-			bundler.buildBundles(config.bundles.items, bundlerOptions);
-	} else {
-		bundlerPromise = Promise.resolve();
-	}
+	const bundlerPromise = options.source && options.source.filepath ?
+			bundler.buildBundlesForFile(options.source.filepath, bundleConfigs, bundlerOptions) :
+			bundler.buildBundles(bundleConfigs, bundlerOptions);
 
 	return bundlerPromise
-		.then(() => copyFiles(config.sourceDir, config.destDir))
-		.then(() => ({
-			status: 'complete'
+		.then(result =>
+			copyFiles(config.sourceDir, config.destDir)
+				.then(() => result)
+		)
+		.then(result => ({
+			status: result.success ? 'complete' : 'error',
+			message: result.message
 		}))
 		.catch(e => {
 			options.logger.error(e);
